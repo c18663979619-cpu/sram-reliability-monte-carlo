@@ -1,0 +1,34 @@
+{
+  "reference": "per-cell analytic VTC inversion, 48 bisections, 20001 diagonal points",
+  "sample_count": 66,
+  "random_seed": 2026,
+  "absolute_tolerance_mv": 0.01,
+  "passed": true,
+  "checks": [
+    {
+      "vdd_v": 0.7,
+      "max_abs_error_mv_by_diagonal_points": {
+        "501": 0.0024799135543568385,
+        "1001": 0.0006686239201192379,
+        "2001": 0.00020550265922292255
+      }
+    },
+    {
+      "vdd_v": 1.0,
+      "max_abs_error_mv_by_diagonal_points": {
+        "501": 0.005860452148342965,
+        "1001": 0.0015556151852225142,
+        "2001": 0.00041646109333326464
+      }
+    },
+    {
+      "vdd_v": 1.1,
+      "max_abs_error_mv_by_diagonal_points": {
+        "501": 0.0073070516799500496,
+        "1001": 0.0019013541303625203,
+        "2001": 0.0005697451729014258
+      }
+    }
+  ],
+  "scope": "Numerical agreement within the same behavioral model; no physical calibration."
+}

@@ -1,0 +1,55 @@
+{
+  "total_rows": 10000,
+  "parts": [
+    {
+      "file": "part-001.csv",
+      "first_sample_id": 0,
+      "rows": 1000
+    },
+    {
+      "file": "part-002.csv",
+      "first_sample_id": 1000,
+      "rows": 1000
+    },
+    {
+      "file": "part-003.csv",
+      "first_sample_id": 2000,
+      "rows": 1000
+    },
+    {
+      "file": "part-004.csv",
+      "first_sample_id": 3000,
+      "rows": 1000
+    },
+    {
+      "file": "part-005.csv",
+      "first_sample_id": 4000,
+      "rows": 1000
+    },
+    {
+      "file": "part-006.csv",
+      "first_sample_id": 5000,
+      "rows": 1000
+    },
+    {
+      "file": "part-007.csv",
+      "first_sample_id": 6000,
+      "rows": 1000
+    },
+    {
+      "file": "part-008.csv",
+      "first_sample_id": 7000,
+      "rows": 1000
+    },
+    {
+      "file": "part-009.csv",
+      "first_sample_id": 8000,
+      "rows": 1000
+    },
+    {
+      "file": "part-010.csv",
+      "first_sample_id": 9000,
+      "rows": 1000
+    }
+  ]
+}
