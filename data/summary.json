@@ -1,0 +1,158 @@
+{
+  "config": {
+    "seed": 42,
+    "samples": 10000,
+    "vth_mean_v": 0.4,
+    "vth_sigma_v": 0.04,
+    "illustration_sigma_v": 0.03,
+    "gain_per_v": 14.0,
+    "criterion_v": 0.18,
+    "supplies_v": [
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1.0,
+      1.05,
+      1.1
+    ],
+    "diagonal_points": 1001,
+    "vtc_points": 4097,
+    "batch_size": 256
+  },
+  "at_1v": {
+    "n": 10000,
+    "mean_snm_mv": 229.14563622060987,
+    "std_snm_mv": 12.096209615569496,
+    "p01_snm_mv": 193.2839789983292,
+    "p50_snm_mv": 231.7717944486316,
+    "below_threshold_count": 8,
+    "below_threshold_pct": 0.08,
+    "ci95_low_pct": 0.04054337198968799,
+    "ci95_high_pct": 0.1577950253386633
+  },
+  "reference_nominal_snm_mv": 245.5850748268295,
+  "reference_mismatch_snm_mv": 165.54810320806058,
+  "supply_sweep": [
+    {
+      "vdd_v": 0.7,
+      "n": 10000,
+      "mean_snm_mv": 107.35403114134293,
+      "std_snm_mv": 12.091005428383538,
+      "p01_snm_mv": 71.46515216396605,
+      "p50_snm_mv": 110.00797647438499,
+      "below_threshold_count": 10000,
+      "below_threshold_pct": 100.0,
+      "ci95_low_pct": 99.96160016293234,
+      "ci95_high_pct": 100.0
+    },
+    {
+      "vdd_v": 0.75,
+      "n": 10000,
+      "mean_snm_mv": 126.79869345830467,
+      "std_snm_mv": 12.092167546150842,
+      "p01_snm_mv": 90.91540960700439,
+      "p50_snm_mv": 129.4544370189335,
+      "below_threshold_count": 10000,
+      "below_threshold_pct": 100.0,
+      "ci95_low_pct": 99.96160016293234,
+      "ci95_high_pct": 100.0
+    },
+    {
+      "vdd_v": 0.8,
+      "n": 10000,
+      "mean_snm_mv": 146.64983760820348,
+      "std_snm_mv": 12.093181303148137,
+      "p01_snm_mv": 110.77153207274384,
+      "p50_snm_mv": 149.30453584152764,
+      "below_threshold_count": 10000,
+      "below_threshold_pct": 100.0,
+      "ci95_low_pct": 99.96160016293234,
+      "ci95_high_pct": 100.0
+    },
+    {
+      "vdd_v": 0.85,
+      "n": 10000,
+      "mean_snm_mv": 166.85129833050902,
+      "std_snm_mv": 12.094064825862896,
+      "p01_snm_mv": 130.97850812315554,
+      "p50_snm_mv": 169.50410523459524,
+      "below_threshold_count": 8930,
+      "below_threshold_pct": 89.3,
+      "ci95_low_pct": 88.67898640566831,
+      "ci95_high_pct": 89.89083132239651
+    },
+    {
+      "vdd_v": 0.9,
+      "n": 10000,
+      "mean_snm_mv": 187.3579327359294,
+      "std_snm_mv": 12.09486538249951,
+      "p01_snm_mv": 151.48983140441788,
+      "p50_snm_mv": 189.9902793301498,
+      "below_threshold_count": 2449,
+      "below_threshold_pct": 24.49,
+      "ci95_low_pct": 23.657061518691062,
+      "ci95_high_pct": 25.342530078180854
+    },
+    {
+      "vdd_v": 0.95,
+      "n": 10000,
+      "mean_snm_mv": 208.1328751072093,
+      "std_snm_mv": 12.09557245985464,
+      "p01_snm_mv": 172.26852916039928,
+      "p50_snm_mv": 210.76495098066817,
+      "below_threshold_count": 286,
+      "below_threshold_pct": 2.86,
+      "ci95_low_pct": 2.5509774684446715,
+      "ci95_high_pct": 3.205225897942718
+    },
+    {
+      "vdd_v": 1.0,
+      "n": 10000,
+      "mean_snm_mv": 229.14563622060987,
+      "std_snm_mv": 12.096209615569496,
+      "p01_snm_mv": 193.2839789983292,
+      "p50_snm_mv": 231.7717944486316,
+      "below_threshold_count": 8,
+      "below_threshold_pct": 0.08,
+      "ci95_low_pct": 0.04054337198968799,
+      "ci95_high_pct": 0.1577950253386633
+    },
+    {
+      "vdd_v": 1.05,
+      "n": 10000,
+      "mean_snm_mv": 250.37066992899048,
+      "std_snm_mv": 12.096784151695099,
+      "p01_snm_mv": 214.51313669818316,
+      "p50_snm_mv": 252.99822524787558,
+      "below_threshold_count": 0,
+      "below_threshold_pct": 0.0,
+      "ci95_low_pct": 0.0,
+      "ci95_high_pct": 0.03839983706765956
+    },
+    {
+      "vdd_v": 1.1,
+      "n": 10000,
+      "mean_snm_mv": 271.7863549471184,
+      "std_snm_mv": 12.09730206549678,
+      "p01_snm_mv": 235.92337179380746,
+      "p50_snm_mv": 274.4146662751052,
+      "below_threshold_count": 0,
+      "below_threshold_pct": 0.0,
+      "ci95_low_pct": 0.0,
+      "ci95_high_pct": 0.03839983706765956
+    }
+  ],
+  "environment": {
+    "python": "3.12.6",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.7"
+  },
+  "source_sha256": {
+    "sram_model.py": "82499127db0239e22debf42b4343b1fe8602d3791b95dfdcf696594312006185",
+    "run_analysis.py": "294a09d6fab894177b149e163a5ead572135476ab9b3ec41dca06292a2768ed0",
+    "config.json": "9e177dd4c6e9f22d80b6592db19cff65e876c4a89e7b4d37ddc122e863614142"
+  }
+}

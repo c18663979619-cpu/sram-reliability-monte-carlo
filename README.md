@@ -1,63 +1,102 @@
-# Monte Carlo Analysis of 6T SRAM Reliability under Process Variations
+# Behavioral SRAM Stability Under Threshold Variation
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![NumPy](https://img.shields.io/badge/NumPy-Vectorized%20Computing-orange)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-Data%20Visualization-green)
-![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
+**A Monte Carlo study of cross-coupled inverter stability, numerical extraction, and supply-voltage sensitivity.**
 
-## Overview
+This project asks how independent threshold-voltage mismatch changes the static noise margin (SNM) of a simplified SRAM-inspired inverter pair. It combines a transparent behavioral model, 10,000 paired Monte Carlo samples, and an independent numerical reference.
 
-As CMOS technology scales down into the nanometer regime, manufacturing process variations—primarily **Random Dopant Fluctuations (RDF)** and line-edge roughness—induce significant threshold voltage ($V_{th}$) mismatch across adjacent transistors. In **6-Transistor Static Random-Access Memory (6T SRAM)** cells, these variations degrade cell stability and can cause catastrophic read or hold failures.
+**Scope:** the circuit is represented by two sigmoid voltage-transfer curves. There are no access transistors, bitlines, wordline, transistor current equations, or foundry models. The results describe the assumed model's static stability; they do not establish SRAM read/write yield or measured silicon reliability.
 
-This project implements a fully vectorized **Monte Carlo simulation framework** from scratch using Python (`NumPy` and `Matplotlib`) to evaluate the statistical reliability, Static Noise Margin (SNM), and parametric yield of a 6T SRAM cell across 10,000 randomized die samples and varying supply voltages ($V_{DD}$).
+[Notebook](sram-reliability-monte-carlo.ipynb) · [Model and assumptions](docs/model.md) · [Numerical validation](docs/validation.md) · [Results data](data/) · [Engineering portfolio](https://github.com/c18663979619-cpu/engineering-research-portfolio)
 
-## Key Highlights
+## Main result
 
-* **Zero-Loop Pure NumPy Vectorization:** Utilizes 2D `(10000, 250)` and 3D `(9, 10000, 200)` NumPy array broadcasting to simultaneously evaluate up to 90,000 SRAM states without Python `for` loops.
-* **Statistical Transistor Variation Modeling:** Generates Gaussian-distributed threshold voltage ($V_{th}$) variations ($\mu = 0.40\text{ V}$) for NMOS and PMOS devices to emulate nanoscale CMOS fabrication tolerances.
-* **6T SRAM Butterfly Curve & Automated SNM Extraction:** Models the cross-coupled inverter pair's Voltage Transfer Characteristics (VTC) and numerically extracts the **Static Noise Margin (SNM)** via $45^\circ$ diagonal projection.
-* **Large-Scale Monte Carlo Yield & $V_{DD}$ Scaling Analysis:** Quantifies tail-distribution failures across 10,000 SRAM cells and demonstrates the non-linear surge in parametric failure rate as $V_{DD}$ scales down from $1.10\text{ V}$ to $0.70\text{ V}$.
+At **VDD = 1.0 V**, with independent Gaussian threshold offsets of **σ = 40 mV**, the revised calculation gives:
 
-## Project Structure
+| Metric | Result |
+|---|---:|
+| Samples / random seed | 10,000 / 42 |
+| Mean SNM | 229.15 mV |
+| Standard deviation of SNM | 12.10 mV |
+| Empirical 1st percentile | 193.28 mV |
+| Samples below the chosen 180 mV criterion | 8 / 10,000 (0.08%) |
+| 95% Wilson interval for that fraction | 0.041–0.158% |
 
-```text
-sram-reliability-monte-carlo/
-├── sram-reliability-monte-carlo.ipynb  # Main Jupyter Notebook (Steps 1 to 4)
-├── figures/                            # Generated high-resolution analysis plots
-│   ├── step1_vth_hist.png              # Step 1: Transistor Vth Gaussian distribution
-│   ├── step2_butterfly.png             # Step 2: Ideal vs. Mismatched Butterfly Curves
-│   ├── step3_mc_snm_dist.png           # Step 3: 10,000-cell Monte Carlo SNM histogram
-│   └── step4_vdd_scaling.png           # Step 4: SNM & Failure Rate vs. Vdd scaling
-├── .gitignore                          # Git ignore configuration
-└── README.md                           # Project documentation
-```
+The 180 mV criterion is an illustrative analysis choice, not a process specification. The interval quantifies finite-sample uncertainty within the assumed model, not uncertainty about its physical accuracy. [Criterion sensitivity data](data/criterion_sensitivity.csv) show how the count changes when this choice changes.
 
-## Simulation Results & Visual Analysis
+![Behavioral SNM and below-criterion fraction across supply voltage](figures/step4_vdd_scaling.png)
 
-### Step 1: Transistor Threshold Voltage ($V_{th}$) Variation
-Models random manufacturing fluctuations across $10,000$ transistors using a Gaussian distribution $V_{th} \sim \mathcal{N}(0.40\text{ V}, 0.03\text{ V}^2)$.
+*The same threshold samples are reused at nine supply voltages. A fixed physical gain parameter of 14 V⁻¹ is used throughout. The dashed margin curve is an empirical 1st percentile; error bars are pointwise 95% Wilson intervals. Lines connect sampled voltages and do not establish an exponential law.*
 
-![Step 1 Vth Variation](figures/step1_vth_hist.png)
+## Engineering work demonstrated
 
-### Step 2: 6T SRAM Butterfly Curve & Static Noise Margin (SNM)
-Compares a balanced, nominal 6T SRAM bitcell ($\text{SNM} = 245.6\text{ mV}$) against a process-skewed cell suffering from severe $V_{th}$ mismatch, where the asymmetric eye shrinkage degrades stability to $\text{SNM} = 165.5\text{ mV}$.
+- Translate threshold mismatch into explicit inverter switching-point shifts.
+- Extract SNM from the two closed lobes of a butterfly curve.
+- Use NumPy broadcasting in bounded batches to evaluate a Monte Carlo population.
+- Compare the fast interpolated calculation with an independent bisection reference.
+- Report sensitivity, uncertainty, model limitations, and a reproducible result trail.
 
-![Step 2 Butterfly Curve](figures/step2_butterfly.png)
+The repository began as a four-stage Python notebook. The review revision separates the model from plotting, preserves the original sample sequence, and records changes in [validation notes](docs/validation.md). The behavioral assumptions and numerical workflow are the subject of this study; no new transistor model or experimental validation is claimed.
 
-### Step 3: Vectorized Monte Carlo SNM Distribution (10,000 Cells)
-Evaluates $10,000$ independent 6T SRAM cells with uncorrelated 4-transistor $V_{th}$ variations ($\sigma_{V_{th}} = 40\text{ mV}$) at $V_{DD} = 1.0\text{ V}$. Because cell stability is governed by the weaker of the two butterfly lobes ($\text{SNM} = \min(\text{SNM}_{\text{top}}, \text{SNM}_{\text{bot}})$), the resulting distribution exhibits a left-skewed tail with a mean of $229.1\text{ mV}$ ($\sigma = 12.1\text{ mV}$) and $8$ tail failures below the $180\text{ mV}$ threshold ($0.08\%$ failure rate).
+## Method and evidence
 
-![Step 3 Monte Carlo SNM Distribution](figures/step3_mc_snm_dist.png)
+### 1. Make the variation assumptions explicit
 
-### Step 4: Supply Voltage ($V_{DD}$) Scaling & Parametric Yield Analysis
-Uses 3D NumPy broadcasting across $9$ supply voltage levels ($0.70\text{ V}$ to $1.10\text{ V}$) to evaluate total-chip reliability under low-power voltage scaling. While the cell maintains near-zero failure rates at $V_{DD} \ge 1.0\text{ V}$, aggressive voltage scaling below $0.90\text{ V}$ pushes the $\mu - 3\sigma$ worst-case boundary below $180\text{ mV}$, causing parametric failure rates to spike exponentially.
+The main experiment draws four independent threshold values per sample, each with mean 0.40 V and standard deviation 0.04 V. The input illustration below uses σ = 0.03 V to retain the original introductory example; it is separate from the main experiment. Both values are illustrative and are not calibrated to a process node or a Pelgrom area law.
 
-![Step 4 Vdd Scaling Analysis](figures/step4_vdd_scaling.png)
+![Illustrative threshold distribution with 30 mV standard deviation](figures/step1_vth_hist.png)
 
-## Getting Started
+### 2. Inspect the geometry before scaling the calculation
 
-1. Clone this repository and install the required dependencies:
+![Nominal and mismatched behavioral butterfly curves with inscribed squares](figures/step2_butterfly.png)
+
+*At 1.0 V, the reference calculation gives 245.59 mV for the matched pair and 165.55 mV for the deliberately mismatched example. Dashed squares show each lobe's margin; the smaller one determines the sample's SNM.*
+
+### 3. Examine the population and its tail
+
+![SNM distribution for 10000 behavioral samples](figures/step3_mc_snm_dist.png)
+
+*The weaker-lobe operation produces an asymmetric distribution. A mean minus three standard deviations is therefore not presented as a guaranteed worst case. Zero observed events at higher supplies also does not imply zero probability.*
+
+## Reproduce
+
+Use **Python 3.12** from the repository root. The recorded run used Python 3.12.6, NumPy 2.3.5, and Matplotlib 3.10.7.
+
 ```bash
-pip install numpy matplotlib jupyter
+python3 -m venv .venv
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python run_analysis.py
+python -m unittest discover -s tests -v
+python validate.py
 ```
-2. Open `sram-reliability-monte-carlo.ipynb` in PyCharm or Jupyter Notebook and run all cells sequentially to reproduce the statistical metrics and figures.
+
+The script creates output directories automatically. `config.json` controls the seed, sample count, threshold distribution, gain, supply voltages, criterion, and numerical grids. To keep a separate experiment:
+
+```bash
+python run_analysis.py --config config.json --output experiment-output
+```
+
+For an executed notebook, install `requirements-notebook.txt` and run `python scripts/execute_notebook.py`. An interactive notebook editor is optional and installed separately. The notebook uses the same model and plotting code as the command-line workflow.
+
+| Path | Purpose |
+|---|---|
+| `sram_model.py` | Behavioral VTC, batched SNM, independent reference, statistics |
+| `run_analysis.py`, `config.json` | Reproducible analysis and experiment parameters |
+| `tests/`, `validate.py` | Unit checks and quantified numerical comparison |
+| `data/samples_1v/` | All 10,000 input samples and 1.0 V margins in ten 1,000-row CSV tables; manifest lists sample IDs |
+| `data/supply_sweep.csv` | Nine-voltage summaries and confidence intervals |
+| `data/summary.json` | Results, dependency versions, and source hashes |
+| `docs/validation.md` | Original-versus-revised comparison and test scope |
+
+## Limitations and next research steps
+
+- Gain, mismatch, independence, and the threshold criterion are assumed. Correlated variation, geometry, temperature, and device sizing are absent.
+- Supply sensitivity depends strongly on the gain-scaling assumption. The original sweep used a fixed normalized curve, while the revised default keeps gain fixed in V⁻¹; [the comparison](data/baseline_comparison.csv) makes the consequence visible.
+- Numerical agreement is checked on representative cases and grids. It is not a proof over all possible parameters or a transistor-level validation.
+- A useful next study would compare these trends with a documented transistor-level hold/read SNM baseline, then explore correlation and gain sensitivity. That work is not included here.
+
+## References
+
+- E. Seevinck, F. J. List, and J. Lohstroh, “Static-noise margin analysis of MOS SRAM cells,” *IEEE JSSC*, 22(5), 748–754, 1987. [DOI](https://doi.org/10.1109/JSSC.1987.1052809). Background for SNM; the sigmoid model here is an illustrative assumption.
+- NIST/SEMATECH, [Confidence intervals for a binomial proportion](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm). Basis for the Wilson interval.
